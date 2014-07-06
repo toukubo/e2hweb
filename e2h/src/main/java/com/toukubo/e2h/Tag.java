@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Tag {
-	public static String pomodoroTagGuid = "9d5fd7e1-8719-471d-936e-b18320e2901f";
+	public static String pomodoroTagGuid = "963af6ee-e953-4aee-af14-ac1a012206b2";
 	String guid = "";
 	String name = "";
 	EvernoteConfig config = EvernoteConfig.createConfig();

@@ -59,7 +59,7 @@ public class Notes {
 		spec.setIncludeTitle(true);
 		spec.setIncludeTagGuids(true);
 		spec.setIncludeNotebookGuid(true);
-		NotesMetadataList notes = config.getNoteStore().findNotesMetadata(filter, 0, 50,spec);
+		NotesMetadataList notes = EvernoteConfig.createConfig().getNoteStore().findNotesMetadata(filter, 0, 50,spec);
 
 		return notes;
 	}

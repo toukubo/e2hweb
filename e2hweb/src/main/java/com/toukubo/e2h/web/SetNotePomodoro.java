@@ -15,14 +15,14 @@ import com.toukubo.e2h.Note;
 /**
  * Servlet implementation class SetNoteReminderDone
  */
-@WebServlet("/SetNoteReminderDone")
-public class SetNoteReminderDone extends HttpServlet {
+@WebServlet("/SetNotePomodoro")
+public class SetNotePomodoro extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public SetNoteReminderDone() {
+    public SetNotePomodoro() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -35,7 +35,7 @@ public class SetNoteReminderDone extends HttpServlet {
 
 		String guid = request.getParameter("guid");
 		Note note = new Note(guid);
-		note.setReminderDone();
+		note.setPomodoro();
 		response.getWriter().write("status:success");
 		response.flushBuffer();
 		

@@ -54,7 +54,7 @@ public class Note {
 			return this.note;
 
 		}
-		return null;
+		return this.note;
 	}
 	public String getGuid() {
 		return guid;
@@ -68,15 +68,14 @@ public class Note {
 	public Note(String guid){
 		try {
 
-//			this.setGuid(guid);
+			this.setGuid(guid);
 //			System.err.println(noteStore.getNoteTagNames(note.getGuid()));
-//			System.err.println("----------was note ----------------");
+			System.err.println("----------was note ----------------");
 //			System.err.println(fullNote.getContent());;
 //			System.err.println(this.getNote().getTitle());;
-//			this.setTitle(this.getNote().getTitle());
-			
-//			this.note = config.getNoteStore().getNote(guid, true,true, false, true);
-//			this.notebook = new Notebook(this.note.getNotebookGuid());
+			this.setTitle(this.getNote().getTitle());
+			System.err.println(this.getTitle());
+			this.notebook = Notebook.findNotebook(this.getNote().getNotebookGuid());
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -149,24 +148,38 @@ public class Note {
 	}
 	
 	public void setReminderDone(){
-		this.note.getAttributes().setReminderDoneTime(System.currentTimeMillis());
+//		this.note.getAttributes().setReminderDoneTime(System.currentTimeMillis());
 		
-			List<String> tags = this.note.getTagGuids();
+			List<String> tags = this.getNote().getTagGuids();
+			System.err.println(tags);
 			tags.remove(Tag.pomodoroTagGuid);
-			this.note.setTagGuids(tags);
+			System.err.println(Tag.pomodoroTagGuid);
+			this.getNote().setTagGuids(tags);
 
 		this.update();
 	}
 	
 	public static void main(String[] args) {
-		Notes notes = new Notes("tag:@micro");
+		Notes notes = new Notes("reminderOrder:* -reminderTime:day+1 -reminderDoneTime:* -tag:@pomodoro");
 		Note note = new Note(notes.getNotes().iterator().next().getGuid());
 		System.err.print(note.note.getGuid());
-		note.setReminderDone();
+		System.err.print(note.getTitle());
+		note.setPomodoro();
 		
 		
 	}
 	public void setGuid(String guid) {
 		this.guid = guid;
+	}
+	public void setPomodoro() {
+		note.addToTagNames("@pomodoro");
+//		List<String> tags = this.getNote().getTagGuids();
+//		System.err.println(tags);
+//		tags.remove(Tag.pomodoroTagGuid);
+//		System.err.println(Tag.pomodoroTagGuid);
+//		this.getNote().setTagGuids(tags);
+
+	this.update();
+		
 	}
 }
