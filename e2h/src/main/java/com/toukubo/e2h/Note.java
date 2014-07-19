@@ -19,7 +19,7 @@ import com.evernote.thrift.TException;
 
 public class Note {
 	private Notebook notebook = null;
-	
+
 	public Notebook getNotebook() {
 		return notebook;
 	}
@@ -27,7 +27,7 @@ public class Note {
 		this.notebook = notebook;
 	}
 	public Note(){
-		
+
 	}
 	public void update(){
 		try {
@@ -42,7 +42,7 @@ public class Note {
 	private String content;
 	private String title;
 	private String guid;
-	
+
 
 	public com.evernote.edam.type.Note getNote(){
 		if(this.note==null){
@@ -69,18 +69,18 @@ public class Note {
 		try {
 
 			this.setGuid(guid);
-//			System.err.println(noteStore.getNoteTagNames(note.getGuid()));
+			//			System.err.println(noteStore.getNoteTagNames(note.getGuid()));
 			System.err.println("----------was note ----------------");
-//			System.err.println(fullNote.getContent());;
-//			System.err.println(this.getNote().getTitle());;
+			//			System.err.println(fullNote.getContent());;
+			//			System.err.println(this.getNote().getTitle());;
 			this.setTitle(this.getNote().getTitle());
 			System.err.println(this.getTitle());
 			this.notebook = Notebook.findNotebook(this.getNote().getNotebookGuid());
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 	}
 	public void refreshTags(){
 		net.enclosing.list.List list  = new net.enclosing.list.List();
@@ -88,25 +88,25 @@ public class Note {
 		List<Tag> bufferedTags = list.list(Tag.class);
 
 	}
-	
+
 	public Collection<Tag> getTags(){
 
 
 		Collection<Tag> tags = new ArrayList<Tag>();
-				
+
 		List<String> tags2;
 		try {
 			Tag tag = new Tag();
-			
+
 			tags2 = this.metaNote.getTagGuids(); 
-//			tags2 = config.getNoteStore().getNoteTagNames(note.getGuid());
+			//			tags2 = config.getNoteStore().getNoteTagNames(note.getGuid());
 			for (String guid : tags2) {
 				tags.add(new Tag(guid,Tag.findTagFromGuid(guid)));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		return tags;
 	}
 	private String parseDom(String content){
@@ -117,22 +117,22 @@ public class Note {
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 			Document doc = dBuilder.parse(in);
-			
+
 			String returned = doc.getDocumentElement().getTextContent();
 			return returned;
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return null;
 	}
 
-	
-	
+
+
 	public String getContent() {
 		if(this.note==null)
 			return "";
-					
+
 		this.setContent(parseDom(this.getNote().getContent()));
 
 		return content;
@@ -146,40 +146,54 @@ public class Note {
 	public void setTitle(String title) {
 		this.title = title;
 	}
-	
+
 	public void setReminderDone(){
-//		this.note.getAttributes().setReminderDoneTime(System.currentTimeMillis());
-		
-			List<String> tags = this.getNote().getTagGuids();
-			System.err.println(tags);
-			tags.remove(Tag.pomodoroTagGuid);
-			System.err.println(Tag.pomodoroTagGuid);
-			this.getNote().setTagGuids(tags);
+		//		this.note.getAttributes().setReminderDoneTime(System.currentTimeMillis());
+
+		List<String> tags = this.getNote().getTagGuids();
+		System.err.println(tags);
+		tags.remove(Tag.pomodoroTagGuid);
+		System.err.println(Tag.pomodoroTagGuid);
+		this.getNote().setTagGuids(tags);
+		this.getNote().getAttributes().setReminderOrderIsSet(false);
+		this.getNote().getAttributes().setReminderTimeIsSet(false);
 
 		this.update();
 	}
-	
+
 	public static void main(String[] args) {
-		Notes notes = new Notes("reminderOrder:* -reminderTime:day+1 -reminderDoneTime:* -tag:@pomodoro");
+		Notes notes = new Notes("-reminderTime:day+1 -reminderDoneTime:*");
 		Note note = new Note(notes.getNotes().iterator().next().getGuid());
 		System.err.print(note.note.getGuid());
 		System.err.print(note.getTitle());
-		note.setPomodoro();
-		
-		
+		//		note.setPomodoro();
+		note.postpone();
+
+	}
+	public void postpone(int day){
+		long reminderTime = this.getNote().getAttributes().getReminderTime()+86400*1000*day;
+		this.getNote().getAttributes().setReminderTime(reminderTime);
+
+		this.update();
+
+	}
+	public void postpone(){
+		this.postpone(2);
 	}
 	public void setGuid(String guid) {
 		this.guid = guid;
 	}
 	public void setPomodoro() {
 		note.addToTagNames("@pomodoro");
-//		List<String> tags = this.getNote().getTagGuids();
-//		System.err.println(tags);
-//		tags.remove(Tag.pomodoroTagGuid);
-//		System.err.println(Tag.pomodoroTagGuid);
-//		this.getNote().setTagGuids(tags);
+		this.getNote().getAttributes().setReminderOrderIsSet(false);
 
-	this.update();
-		
+		//		List<String> tags = this.getNote().getTagGuids();
+		//		System.err.println(tags);
+		//		tags.remove(Tag.pomodoroTagGuid);
+		//		System.err.println(Tag.pomodoroTagGuid);
+		//		this.getNote().setTagGuids(tags);
+
+		this.update();
+
 	}
 }

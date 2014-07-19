@@ -1,4 +1,4 @@
-
+package com.toukubo.e2h.web;
 
 import java.io.IOException;
 
@@ -15,14 +15,14 @@ import com.toukubo.e2h.Note;
 /**
  * Servlet implementation class SetNoteReminderDone
  */
-@WebServlet("/SetNoteReminderDone")
-public class SetNoteReminderDone extends HttpServlet {
+@WebServlet("/Postpone")
+public class Postpone extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public SetNoteReminderDone() {
+    public Postpone() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -35,7 +35,7 @@ public class SetNoteReminderDone extends HttpServlet {
 
 		String guid = request.getParameter("guid");
 		Note note = new Note(guid);
-		note.setReminderDone();
+		note.postpone();
 		response.getWriter().write("status:success");
 		response.flushBuffer();
 		
